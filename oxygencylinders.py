@@ -26,7 +26,7 @@ def get(zone):
     driver = webdriver.Chrome(options=options)
     search = "hospitals with oxygen cylinder in{}".format(zone)
     url =f"https://www.google.com/search?q={search}"
-    names,addresses,phones,openstatuses=["Raj Gas Agency",Triveni Oxygen Company"],["DM Rd, near sneak garden","160, Jeevan Jyoti"],["094114 77488","099356 63423"],["open","open"]
+    names,addresses,phones,openstatuses=["Panki Oxygen","Raj Gas Agency",Triveni Oxygen Company"],["C-13,Udyog Kunj,Near II A Bhawan,Surajpur","DM Rd, near sneak garden","160, Jeevan Jyoti"],["","094114 77488","099356 63423"],["open","open","open"]
     driver.get(url)
     wait = WebDriverWait(driver, 10)
     menu_bt = wait.until(EC.element_to_be_clickable( (By.XPATH, '//div[@class="hdtb-mitem"]//a')) )
