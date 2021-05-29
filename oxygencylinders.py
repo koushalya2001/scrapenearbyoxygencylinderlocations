@@ -24,24 +24,21 @@ def get(zone):
     options.add_argument("--disable-infobars")
     options.add_argument("--disable-dev-shm-usage")
     driver = webdriver.Chrome(options=options)
-    search = "oxygen cylinder {}".format(zone)
+    search = "hospitals with oxygen cylinder in{}".format(zone)
     url =f"https://www.google.com/search?q={search}"
-    names,addresses,phones,userstars,openstatuses=[],[],[],[],[]
+    names,addresses,phones,openstatuses=[],[],[],[]
     driver.get(url)
     wait = WebDriverWait(driver, 10)
     menu_bt = wait.until(EC.element_to_be_clickable( (By.XPATH, '//div[@class="hdtb-mitem"]//a')) )
     menu_bt.click()
     response = BeautifulSoup(driver.page_source, 'html.parser')
-    rlist = response.find_all('div', class_='section-result-content')
-    print(rlist)
     name=driver.find_elements_by_xpath('//div[@class="CUwbzc-content gm2-body-2"]//div[@class="qBF1Pd-haAclf"]//span')
     address=driver.find_elements_by_xpath('//div[@class="CUwbzc-content gm2-body-2"]//div[@class="ZY2y6b-RWgCYc"]//div[@class="ZY2y6b-RWgCYc"]//span[@jsinstance="*1"]//jsl//span[2]')
     phone=driver.find_elements_by_xpath('//div[@jsinstance="*1"]//span[@jsinstance="*0"]//jsl//span[2]')
-   # userstar=driver.find_elements_by_xpath('//div[@class="section-result-text-content"]//span[@class="cards-rating-score"]')
-  #  openstatus=driver.find_elements_by_xpath('//div[@class="section-result-hours-phone-container"]//span[@class="section-result-info section-result-closed" and not(contains(@style, "display:none"))]//span[1] | //div[@class="section-result-hours-phone-container"]//span[@class="section-result-info section-result-opening-hours" and not(contains(@style, "display:none"))]//span[1]')
     for e in address:
-        print(e.text)
-        addresses.append(e.text)
+        if(not(bool(re.search("[Opens]\w+", text)) or bool(re.search("[Clos]\w+", text)))):
+          print(e.text)
+          addresses.append(e.text)
     for f in name:
         print("name")
         print(f.text)
@@ -55,19 +52,12 @@ def get(zone):
         else:
             phones.append('')
             openstatuses.append('')
-  #  for q in openstatus:
-   #     if q.text==".":
-    #           openstatuses.append(" ")
-     #   else:
-      #   openstatuses.append(q.text)
-   # for r in userstar :
-    #    userstars.append(r.text)
     print(phones)
     print(names)
     print(addresses)
     print(openstatuses)
-    print(userstars)
-    score_titles = [{"name": t, "address": s,"phone":u,"rating":v,"status":w} for t, s, u, v, w in zip(names,addresses,phones,userstars,openstatuses)]
+
+    score_titles = [{"name": t, "address": s,"phone":u,"status":w} for t,s,u,w in zip(names,addresses,phones,openstatuses)]
     shops=json.dumps(score_titles)
     driver.quit()
     return jsonify({"area":score_titles})
