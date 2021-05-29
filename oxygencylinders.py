@@ -50,7 +50,7 @@ def get(zone):
         if(bool(re.search(r'\d',g))):
             print(g.text)
             phones.append(g.text)
-        else if(g.text!=''):
+        elif(g.text!=''):
             openstatuses.append(g.text)
         else:
             phones.append('')
